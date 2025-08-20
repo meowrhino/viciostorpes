@@ -1,0 +1,16 @@
+{
+  "titulo": "Caballo 1",
+  "descripcion": "Texto de ejemplo para Caballo 1. Sustituye este texto por la descripción real del proyecto.",
+  "imagenPrincipal": "1.jpg",
+  "galeria": [
+    "1.jpg",
+    "2.jpg",
+    "3.jpg",
+    "4.jpg",
+    "5.jpg"
+  ],
+  "coords": [
+    22,
+    28
+  ]
+}
