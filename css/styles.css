@@ -1,9 +1,8 @@
-/* styles.css (random coords layout) */
+/* styles.css (v3: transitions) */
 :root{
   --fg:#e6e6e6;
   --muted:#bdbdbd;
   --bg:#0b0b0b;
-  --grid-gap: 1.2rem;
   --card-radius: 22px;
   --maxw: 1400px;
 }
@@ -21,21 +20,21 @@ body{
   position:fixed; inset:0;
   background:#0b0b0b center/cover no-repeat;
   z-index:-2;
-  transition: background-image .35s ease, filter .2s ease;
+  transition: background-image .35s ease, filter .3s ease;
 }
 .bg-overlay{
   position:fixed; inset:0; z-index:-1;
   pointer-events:none;
   background:transparent;
   mix-blend-mode:normal;
-  transition: background-color .25s ease;
+  transition: background-color .3s ease;
 }
 
-/* Campo para piezas flotantes */
+/* Campo */
 .app{ min-height:100dvh; }
 .field{ position:relative; min-height:100dvh; }
 
-/* Menú inferior centrado (texto, no botones) */
+/* Menú inferior */
 .category-nav{
   position:fixed; left:50%; bottom:2.5rem; transform:translateX(-50%);
   display:flex; gap:2.2rem;
@@ -46,13 +45,12 @@ body{
   background:none; border:none; padding:.3rem .2rem;
   color:#cfcfcf; font-size:1.05rem; letter-spacing:.02em;
   cursor:pointer; opacity:.85;
+  transition: color .2s ease, opacity .2s ease;
 }
 .category-nav .cat-btn:hover{ opacity:1 }
-.category-nav .cat-btn.active{
-  color:#fff; text-decoration:underline; text-underline-offset:6px;
-}
+.category-nav .cat-btn.active{ color:#fff; text-decoration:underline; text-underline-offset:6px; }
 
-/* Carta posicionada por coords en dvh/dvw (centro = punto) */
+/* Carta con transiciones (opacidad/escala/tamaño) */
 .card{
   position:fixed;
   transform: translate(-50%, -50%);
@@ -60,10 +58,15 @@ body{
   overflow:visible;
   cursor:pointer;
   z-index:1;
-  will-change: transform;
+  will-change: transform, opacity, width, height;
+  opacity:1;
+  transition: opacity .35s ease, transform .35s ease, width .35s ease, height .35s ease;
 }
-.card.hidden{ display:none !important }
-
+.card.is-off{
+  opacity:0;
+  transform: translate(-50%, -50%) scale(.92);
+  pointer-events:none;
+}
 .card .img-wrap{
   position:relative;
   display:block;
@@ -93,6 +96,7 @@ body{
 
 /* Stickers */
 .sticker{ transform: translate(-50%, -50%) rotate(-2deg) }
+.sticker.is-off{ transform: translate(-50%, -50%) rotate(-2deg) scale(.92); }
 .sticker .label{ background: rgba(255,255,255,.06); color:#ddd }
 
 /* Project page */
@@ -137,3 +141,7 @@ body{
   color:#cfcfcf; font-size:1.05rem; letter-spacing:.02em;
 }
 .cat-btn.as-link:hover{ opacity:1 }
+
+@media (prefers-reduced-motion: reduce){
+  *{ transition:none !important }
+}

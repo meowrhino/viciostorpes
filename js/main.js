@@ -1,4 +1,4 @@
-// js/main.js (random coords + sizes config)
+// js/main.js (v3 transitions + robust sticker paths)
 const CATEGORIES = ["flashes","mockup","moodboard","tattoo"];
 const field = document.getElementById("field");
 const nav = document.getElementById("categoryNav");
@@ -6,10 +6,9 @@ const bg = document.getElementById("bg");
 const bgOverlay = document.getElementById("bg-overlay");
 
 let HOME = null;
-let ACTIVE = null; // categoría activa o null
-let CARD_INDEX = {}; // slug -> card element (proyectos)
-let STICKERS = [];  // sticker elements
-let SLUG_TO_CATEGORY = {}; // slug -> set(categories)
+let ACTIVE = null;
+let CARD_INDEX = {};
+let STICKERS = [];
 
 async function loadJSON(path){
   const res = await fetch(path);
@@ -63,19 +62,27 @@ function applyFilter(category){
 
   Object.entries(CARD_INDEX).forEach(([slug, card])=>{
     const show = !set || set.has(slug);
-    card.classList.toggle("hidden", !show);
     if(show){
+      card.classList.remove("is-off");
       card.style.width = size + "dvw";
       card.style.height = size + "dvw";
+      card.setAttribute("aria-hidden","false");
+    }else{
+      card.classList.add("is-off");
+      card.setAttribute("aria-hidden","true");
     }
   });
 
   STICKERS.forEach(card => {
     const show = !set || set.has(card.dataset.slug);
-    card.classList.toggle("hidden", !show);
     if(show){
+      card.classList.remove("is-off");
       card.style.width = size + "dvw";
       card.style.height = size + "dvw";
+      card.setAttribute("aria-hidden","false");
+    }else{
+      card.classList.add("is-off");
+      card.setAttribute("aria-hidden","true");
     }
   });
 }
@@ -109,10 +116,17 @@ function cardProject({slug, title, cover, coords}){
   return card;
 }
 
+function normalizeStickerImage(image, slug){
+  if(/^data\//.test(image) || /^https?:\/\//.test(image)) return image;
+  // Si es solo "2.jpg" etc, lo resolvemos dentro del proyecto del slug
+  return `data/_PROYECTOS/${slug}/${image}`;
+}
+
 function cardSticker({image, slug}){
+  const imgPath = normalizeStickerImage(image, slug);
   const card = el("article", {class:"card sticker", attrs:{"data-type":"sticker","data-slug":slug}});
   const wrap = el("a",{class:"img-wrap", attrs:{href:`project.html?slug=${encodeURIComponent(slug)}`, "aria-label":`Ir a ${slug} (sticker)`}});
-  const img = el("img",{attrs:{src:image, alt:`Sticker ${slug}`}});
+  const img = el("img",{attrs:{src:imgPath, alt:`Sticker ${slug}`}});
   const lab = el("span",{class:"label", html:"sticker"});
   wrap.appendChild(img);
   card.appendChild(wrap);
@@ -126,17 +140,12 @@ function cardSticker({image, slug}){
 async function build(){
   HOME = await loadJSON("data/home.json");
 
-  SLUG_TO_CATEGORY = {};
+  const slugs = new Set();
   for(const cat of CATEGORIES){
-    const arr = HOME.categories?.[cat] || [];
-    for(const s of arr){
-      SLUG_TO_CATEGORY[s] ??= new Set();
-      SLUG_TO_CATEGORY[s].add(cat);
-    }
+    (HOME.categories?.[cat] || []).forEach(s => slugs.add(s));
   }
 
-  const uniqueSlugs = new Set(Object.keys(SLUG_TO_CATEGORY));
-  for(const slug of uniqueSlugs){
+  for(const slug of slugs){
     try{
       const data = await loadJSON(`data/_PROYECTOS/${slug}/${slug}.json`);
       const title = data.titulo || slug;

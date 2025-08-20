@@ -54,3 +54,10 @@
 - [ ] Transiciones/animaciones al activar/desactivar filtros y al cambiar tamaño.
 - [ ] Persistir posiciones y categoría activa en `sessionStorage`.
 - [ ] Soporte de `coords` también para stickers en `home.json`.
+
+# Cambios v3
+- Transiciones (opacity/scale/size) al filtrar.
+- En lugar de ocultar con display:none, usamos `.is-off` para poder animar.
+- Stickers aceptan `image: "2.jpg"` o ruta completa; si solo es el nombre,
+  se resuelve como `data/_PROYECTOS/<slug>/2.jpg`.
+- Mantiene coords en dvh/dvw, y tamaños configurables por categoría (dvw).

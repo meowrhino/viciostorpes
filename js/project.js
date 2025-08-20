@@ -1,4 +1,4 @@
-// js/project.js
+// js/project.js (v3)
 const params = new URLSearchParams(location.search);
 const slug = params.get("slug");
 const container = document.getElementById("projectContainer");
