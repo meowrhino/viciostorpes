@@ -106,7 +106,7 @@ function cardProject({slug, title, cover, coords}){
 
   wrap.appendChild(img);
   card.appendChild(wrap);
-  card.appendChild(lab);
+  // card.appendChild(lab);
 
   const c = coords && Array.isArray(coords) && coords.length===2
     ? { top: Number(coords[0]), left: Number(coords[1]) }
@@ -130,7 +130,7 @@ function cardSticker({image, slug}){
   const lab = el("span",{class:"label", html:"sticker"});
   wrap.appendChild(img);
   card.appendChild(wrap);
-  card.appendChild(lab);
+  // card.appendChild(lab);
 
   const c = randCoord(10);
   placeCardAt(card, c.top, c.left);
