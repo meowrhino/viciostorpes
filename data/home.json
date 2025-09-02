@@ -6,25 +6,45 @@
     "mockup": [
       "caballo2"
     ],
-    "moodboard": [
-      "caballo4"
-    ],
+    "moodboard": [],
     "tattoo": [
       "caballo2",
-      "caballo3",
       "caballo4"
     ]
   },
+
+
+
+  "exclusiveByCategory": {
+    "flashes": [],
+    "mockup":  [],
+    "tattoo":   ["caballo3"],
+    "moodboard": ["caballo4"]
+  },
+
+
+
   "stickers": [
-    {
-      "image": "2.jpg",
-      "slug": "caballo2"
-    },
-    {
-      "image": "4.jpg",
-      "slug": "caballo4"
-    }
+    { "image": "2.jpg", "slug": "caballo2" },
+    { "image": "4.jpg", "slug": "caballo4" }
   ],
+
+
+
+  "exclusiveStickersByCategory": {
+    "tattoo": [
+      { "image": "2.jpg", "slug": "caballo3" }
+    ],
+    "moodboard": [
+      { "image": "4.jpg", "slug": "caballo4" }
+    ],
+    "flashes": [
+      { "image": "1.jpg", "slug": "caballo1" }
+    ]
+  },
+
+
+
   "backgrounds": {
     "default": {
       "bg": "blue",
@@ -62,6 +82,9 @@
       "hover": "CadetBlue"
     }
   },
+
+
+
   "sizes": {
     "default": 14,
     "byCategory": {
@@ -70,5 +93,14 @@
       "moodboard": 20,
       "tattoo": 18
     }
+  },
+
+
+
+  "coords": {
+    "caballo1": [80, 80],
+    "caballo2": [60, 60],
+    "caballo3": [30, 30],
+    "caballo4": [10, 10]
   }
 }
