@@ -202,18 +202,20 @@ button:hover, button:focus,
   margin-top: 0;
   padding: 20dvh 5vw 20dvh;
   display: flow-root;
-  text-align: center;
+
 }
 .project-title {
   font-size: clamp(1.6rem, 3vw, 2.6rem);
   font-weight: 800;
   margin: 0.6rem 0 0.4rem;
+  text-align: left;
 }
 .project-desc {
   color: var(--muted, var(--text-color));
   max-width: 70ch;
-  margin: 0 auto 2rem;
+  margin: 0 0 2rem;
   line-height: 1.5;
+    text-align: left;
 }
 
 /* Enlaces dentro del texto de proyecto */
