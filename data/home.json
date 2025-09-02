@@ -1,8 +1,7 @@
 {
   "categories": {
     "flashes": [
-      "caballo1",
-      "caballo3"
+      "caballo1"
     ],
     "mockup": [
       "caballo2"
@@ -11,7 +10,6 @@
       "caballo4"
     ],
     "tattoo": [
-      "caballo1",
       "caballo2",
       "caballo3",
       "caballo4"
@@ -28,31 +26,46 @@
     }
   ],
   "backgrounds": {
+    "default": {
+      "bg": "blue",
+      "overlay": "rgba(0,0,0,0.10)",
+      "filters": "none",
+      "color": "red",
+      "hover": "lime"
+    },
     "flashes": {
       "image": "data/_FONDOS/flashes.jpg",
-      "overlay": "rgba(0,0,0,0.12)",
-      "filters": "brightness(0.9) contrast(1.05)"
+      "overlay": "rgba(0,0,0,0.18)",
+      "filters": "contrast(1.05) saturate(1.05)",
+      "color": "dimGray",
+      "hover": "mediumpurple"
     },
     "mockup": {
       "image": "data/_FONDOS/mockup.jpg",
-      "overlay": "rgba(0,0,0,0.10)",
-      "filters": "brightness(0.95)"
+      "overlay": "rgba(0,0,0,0.15)",
+      "filters": "none",
+      "color": "red",
+      "hover": "gold"
     },
     "moodboard": {
       "image": "data/_FONDOS/moodboard.jpg",
       "overlay": "rgba(0,0,0,0.18)",
-      "filters": "saturate(1.05)"
+      "filters": "saturate(1.05)",
+      "color": "azure",
+      "hover": "tan"
     },
     "tattoo": {
       "image": "data/_FONDOS/tattoo.jpg",
       "overlay": "rgba(0,0,0,0.12)",
-      "filters": "none"
+      "filters": "none",
+      "color": "LightCyan",
+      "hover": "CadetBlue"
     }
   },
   "sizes": {
-    "default": 18,
+    "default": 14,
     "byCategory": {
-      "flashes": 22,
+      "flashes": 20,
       "mockup": 16,
       "moodboard": 20,
       "tattoo": 18

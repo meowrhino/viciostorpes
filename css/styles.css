@@ -1,14 +1,14 @@
-/* styles.css (v3: transitions) */
-:root {
-  --fg: #e6e6e6;
-  --muted: #bdbdbd;
-  --bg: #0b0b0b;
-  --card-radius: 0px;
-  --maxw: 1400px;
-}
+/* =============================
+   styles.css — Viciostorpes
+   Tema 100% por variables CSS (inyectadas por JS)
+   - Sin valores por defecto en CSS
+   - Sin border-radius
+   - Hover sin cambiar fondo/color (solo opacidad)
+   ============================= */
+@import url("https://fonts.googleapis.com/css2?family=Sofia+Sans+Extra+Condensed:ital,wght@0,100..900;1,100..900&display=swap");
 
-@import url('https://fonts.googleapis.com/css2?family=Sofia+Sans+Extra+Condensed:ital,wght@0,100..900;1,100..900&display=swap');
-
+/* ========== Reset básico ==========
+   (mantenemos todo lo demás controlado por variables) */
 * {
   box-sizing: border-box;
 }
@@ -16,33 +16,50 @@ html,
 body {
   height: 100%;
 }
+
+/* ========== Body / tema global ==========
+   El body arranca oculto y se muestra cuando JS aplica el tema
+   (añade .themed). Todas las variables vienen del JS. */
 body {
   margin: 0;
   font-family: "Sofia Sans Extra Condensed", sans-serif;
-  color: var(--fg);
-  background: var(--bg);
+  color: var(--text-color);
+  background: var(--bg-color);
   overflow-x: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+body.themed {
+  opacity: 1;
 }
 
-/* Fondo y velo */
+/* ========== Capas de fondo ==========
+   Se alimentan de: --bg-color, --bg-image, --bg-filters, --overlay-color */
 .bg {
   position: fixed;
   inset: 0;
-  background: #0b0b0b center/cover no-repeat;
+  background-color: var(--bg-color);
+  background-image: var(--bg-image);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: var(--bg-filters);
   z-index: -2;
-  transition: background-image 0.35s ease, filter 0.3s ease;
+  transition: background-image 0.35s ease, filter 0.3s ease,
+    background-color 0.3s ease;
 }
 .bg-overlay {
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background: transparent;
+  background: var(--overlay-color);
   mix-blend-mode: normal;
   transition: background-color 0.3s ease;
 }
 
-/* Campo */
+/* ========== Layout base ==========
+   Contenedores principales del lienzo */
 .app {
   min-height: 100dvh;
 }
@@ -51,7 +68,8 @@ body {
   min-height: 100dvh;
 }
 
-/* Menú inferior */
+/* ========== Navegación por categorías ==========
+   Los botones heredan color global. Hover solo sube opacidad. */
 .category-nav {
   position: fixed;
   left: 50%;
@@ -67,28 +85,45 @@ body {
   font: inherit;
   background: none;
   border: none;
-  padding: 0.3rem 0.2rem;
-  color: #cfcfcf;
+  padding: 0.3rem 0.4rem;
+  color: var(--text-color);
   font-size: 1.05rem;
   letter-spacing: 0.02em;
   cursor: pointer;
-  opacity: 0.85;
-  transition: color 0.2s ease, opacity 0.2s ease;
+  opacity: 0.9;
+  transition: opacity 0.2s ease;
 }
-.category-nav .cat-btn:hover {
+.category-nav .cat-btn:hover,
+.category-nav .cat-btn:focus{
+  color: var(--hover-color);
   opacity: 1;
+  outline: none;
 }
 .category-nav .cat-btn.active {
-  color: #fff;
   text-decoration: underline;
   text-underline-offset: 6px;
 }
 
-/* Carta con transiciones (opacidad/escala/tamaño) */
+/* ========== Interactivos globales ==========
+   Cualquier link/botón cambia a --hover-color en hover/focus */
+a, button, .btn, .cat-btn{
+  color: var(--text-color);
+  transition: color .2s ease, opacity .2s ease;
+}
+a:hover, a:focus,
+button:hover, button:focus,
+.btn:hover, .btn:focus,
+.cat-btn:hover, .cat-btn:focus{
+  color: var(--hover-color);
+  opacity: 1;
+  outline: none;
+}
+
+/* ========== Cards / Stickers ==========
+   Posicionadas absolutas con transiciones suaves */
 .card {
   position: fixed;
   transform: translate(-50%, -50%);
-  border-radius: var(--card-radius);
   overflow: visible;
   cursor: pointer;
   z-index: 1;
@@ -108,10 +143,9 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  border-radius: var(--card-radius);
 }
 
-/* borde disuelto */
+/* Borde disuelto en la imagen */
 .card img {
   width: 100%;
   height: 100%;
@@ -142,7 +176,7 @@ body {
   background: rgba(0, 0, 0, 0.45);
   padding: 0.3rem 0.5rem;
   font-size: 0.8rem;
-  color: var(--muted);
+  color: var(--muted, var(--text-color));
   backdrop-filter: blur(6px);
 }
 
@@ -155,18 +189,19 @@ body {
 }
 .sticker .label {
   background: rgba(255, 255, 255, 0.06);
-  color: #ddd;
+  color: var(--text-color);
 }
 
-/* Project page */
-.project-container, #projectContainer {
-  max-width: var(--maxw);
+/* ========== Página de proyecto ==========
+   Contenedor, título, descripción, hero y galería */
+.project-container,
+#projectContainer {
+  max-width: var(--maxw, 1400px);
   margin-left: auto;
   margin-right: auto;
-  /* Evita colapso con body: usamos padding en lugar de margin-top */
   margin-top: 0;
   padding: 20dvh 5vw 20dvh;
-  display: flow-root; /* contención de formato para evitar colapsos */
+  display: flow-root;
   text-align: center;
 }
 .project-title {
@@ -175,10 +210,25 @@ body {
   margin: 0.6rem 0 0.4rem;
 }
 .project-desc {
-  color: #cfcfcf;
+  color: var(--muted, var(--text-color));
   max-width: 70ch;
   margin: 0 auto 2rem;
   line-height: 1.5;
+}
+
+/* Enlaces dentro del texto de proyecto */
+.project-container a,
+#projectContainer a {
+  color: var(--text-color);
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+.project-container a:hover,
+#projectContainer a:hover,
+.project-container a:focus,
+#projectContainer a:focus{
+  color: var(--hover-color);
+  opacity: 1;
+  outline: none;
 }
 
 .project-hero {
@@ -218,7 +268,8 @@ body {
   display: block;
 }
 
-/* "volver a la home" con estilo de menú */
+/* ========== Volver a la home ==========
+   Estilo link sin alterar colores en hover */
 .volver-home {
   position: fixed;
   bottom: 1dvh;
@@ -232,14 +283,19 @@ body {
   background: none;
   border: none;
   padding: 0.3rem 0.2rem;
-  color: #cfcfcf;
+  color: var(--text-color);
   font-size: 1.05rem;
   letter-spacing: 0.02em;
 }
-.cat-btn.as-link:hover {
+.cat-btn.as-link:hover,
+.cat-btn.as-link:focus{
+  color: var(--hover-color);
   opacity: 1;
+  outline: none;
 }
 
+/* ========== Accesibilidad: reduce motion ==========
+   Quita animaciones si el SO lo pide */
 @media (prefers-reduced-motion: reduce) {
   * {
     transition: none !important;
