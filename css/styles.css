@@ -104,7 +104,10 @@ body.themed {
   opacity: 1;
   outline: none;
 }
-.category-nav .cat-btn.active {
+.category-nav .cat-btn.active,
+.category-nav .cat-btn[aria-pressed="true"] {
+  color: var(--hover-color) !important;
+  opacity: 1;
   text-decoration: underline;
   text-underline-offset: 6px;
 }

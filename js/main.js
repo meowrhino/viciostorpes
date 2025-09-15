@@ -213,13 +213,13 @@ function ensureBgLayers(){
   }
 }
 function mergeTheme(defaults, specific){
+  // Simplificado: solo existe `bg` en home.json (color o imagen)
   return {
-    bg:      specific?.bg      ?? defaults?.bg      ?? null,
-    image:   specific?.image   ?? defaults?.image   ?? null,
-    overlay: specific?.overlay ?? defaults?.overlay ?? null,
-    filters: specific?.filters ?? defaults?.filters ?? null,
-    color:   specific?.color   ?? defaults?.color   ?? null,
-    hover:   specific?.hover   ?? defaults?.hover   ?? null,
+    bg:       specific?.bg ?? defaults?.bg ?? null,
+    overlay:  specific?.overlay ?? defaults?.overlay ?? null,
+    filters:  specific?.filters ?? defaults?.filters ?? null,
+    color:    specific?.color   ?? defaults?.color   ?? null,
+    hover:    specific?.hover   ?? defaults?.hover   ?? null,
   };
 }
 function resolveToAbs(urlMaybe){
@@ -231,17 +231,30 @@ function applyCSSVars(theme){
   ensureBgLayers();
 
   const r = document.documentElement;
-  const bg      = theme.bg      ?? '#0f0f12';
-  const image   = theme.image   ?? null;
+  const bgRaw   = theme.bg      ?? '#0f0f12';
   const filters = theme.filters ?? 'none';
   const overlay = theme.overlay ?? 'rgba(0,0,0,0.10)';
   const color   = theme.color   ?? '#E6E6E6';
   const hover   = theme.hover   ?? '#FFFFFF';
 
-  const abs = resolveToAbs(image);
+  // Detectar si bg es una imagen o un color
+  const isImage = (typeof bgRaw === 'string') && (
+    /\.(jpg|jpeg|png|gif|webp)$/i.test(bgRaw) ||
+    /^https?:\/\//.test(bgRaw) ||
+    bgRaw.startsWith('data/')
+  );
 
-  r.style.setProperty('--bg-color', bg);
-  r.style.setProperty('--bg-image', abs ? `url("${abs}")` : 'none');
+  let bgColor = bgRaw;
+  let bgImage = 'none';
+
+  if (isImage){
+    bgColor = '#0f0f12'; // color de respaldo mientras carga la imagen
+    const abs = resolveToAbs(bgRaw);
+    bgImage = abs ? `url("${abs}")` : 'none';
+  }
+
+  r.style.setProperty('--bg-color', bgColor);
+  r.style.setProperty('--bg-image', bgImage);
   r.style.setProperty('--bg-filters', filters);
   r.style.setProperty('--overlay-color', overlay);
   r.style.setProperty('--text-color', color);
@@ -518,14 +531,17 @@ async function build(){
   }
   === /Stickers DESACTIVADOS (exclusivos) === */
 
-  // 4) Navegación por categorías (toggle)
+  // 4) Navegación por categorías (mantener activa al clicar la misma)
   if(nav){
     nav.addEventListener("click",(e)=>{
       const b = e.target.closest(".cat-btn");
       if(!b) return;
       const cat = b.dataset.cat;
-      if(ACTIVE === cat) applyFilter(null); // desmarca -> tema default + ocultar exclusivos
-      else               applyFilter(cat);
+      if (ACTIVE === cat) {
+        // Mantenerla activa (no desactivar al volver a clicar)
+        return;
+      }
+      applyFilter(cat);
     });
   }
 

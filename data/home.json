@@ -30,28 +30,28 @@
       "hover": "lime"
     },
     "flashes": {
-      "image": "data/_FONDOS/flashes.jpg",
+      "bg": "data/_FONDOS/flashes.jpg",
       "overlay": "rgba(0,0,0,0.18)",
       "filters": "contrast(1.05) saturate(1.05)",
       "color": "dimGray",
       "hover": "mediumpurple"
     },
     "mockup": {
-      "image": "data/_FONDOS/mockup.jpg",
+      "bg": "data/_FONDOS/mockup.jpg",
       "overlay": "rgba(0,0,0,0.15)",
       "filters": "none",
       "color": "red",
       "hover": "gold"
     },
     "moodboard": {
-      "image": "data/_FONDOS/moodboard.jpg",
+      "bg": "data/_FONDOS/moodboard.jpg",
       "overlay": "rgba(0,0,0,0.18)",
       "filters": "saturate(1.05)",
       "color": "azure",
       "hover": "tan"
     },
     "tattoo": {
-      "image": "data/_FONDOS/tattoo.jpg",
+      "bg": "data/_FONDOS/tattoo.jpg",
       "overlay": "rgba(0,0,0,0.12)",
       "filters": "none",
       "color": "LightCyan",
