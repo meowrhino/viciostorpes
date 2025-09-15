@@ -333,12 +333,17 @@ button:hover, button:focus,
   border-radius: 14px; */
   padding: clamp(0.75rem, 1.5vw, 1rem) clamp(1rem, 2vw, 1.25rem);
   line-height: 1.35;
-  transition: transform 25s ease;
 }
 
 .center-text__content {
   font-size: clamp(1rem, 2vw, 1.25rem);
   text-align: center;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.center-text__content.is-fading-out {
+  opacity: 0;
 }
 
 .center-text__arrow {

@@ -61,18 +61,29 @@ function setCenterTextForCategory(category){
   if(next) next.style.display = showArrows ? '' : 'none';
 }
 
-function renderCenterText(){
+function renderCenterText(newText){
   const content = document.getElementById('center-text-content');
   if(!content) return;
-  const { list, idx } = CENTER_STATE;
-  content.textContent = (list && list.length) ? String(list[idx]) : '';
+
+  if(newText === undefined){
+    const { list, idx } = CENTER_STATE;
+    newText = (list && list.length) ? String(list[idx]) : '';
+  }
+
+  // fade-out → change text → fade-in
+  content.classList.add('is-fading-out');
+  setTimeout(()=>{
+    content.textContent = newText;
+    content.classList.remove('is-fading-out');
+  }, 250); // should match CSS transition duration
 }
 
 function cycleCenterText(direction){
   const n = CENTER_STATE.list ? CENTER_STATE.list.length : 0;
   if(n <= 1) return;                   // no hay nada que ciclar
   CENTER_STATE.idx = (CENTER_STATE.idx + direction + n) % n;
-  renderCenterText();
+  const nextText = String(CENTER_STATE.list[CENTER_STATE.idx]);
+  renderCenterText(nextText);
 }
 
 // ------------------------
