@@ -17,6 +17,11 @@ body {
   height: 100%;
 }
 
+:root {
+  /* Duración única para fade del texto y deslizamiento de flechas */
+  --center-text-ms: 300ms;
+}
+
 /* ========== Body / tema global ==========
    El body arranca oculto y se muestra cuando JS aplica el tema
    (añade .themed). Todas las variables vienen del JS. */
@@ -327,10 +332,6 @@ button:hover, button:focus,
 
 .center-text__inner {
   pointer-events: auto;
-  /* background: rgba(0,0,0,0.55); */
-  /* color: var(--text-color, #fff); antes decía --color-text */
-  /* backdrop-filter: blur(6px) saturate(120%);
-  border-radius: 14px; */
   padding: clamp(0.75rem, 1.5vw, 1rem) clamp(1rem, 2vw, 1.25rem);
   line-height: 1.35;
 }
@@ -339,7 +340,7 @@ button:hover, button:focus,
   font-size: clamp(1rem, 2vw, 1.25rem);
   text-align: center;
   opacity: 1;
-  transition: opacity 0.3s ease;
+  transition: opacity var(--center-text-ms) ease;
 }
 
 .center-text__content.is-fading-out {
@@ -350,21 +351,10 @@ button:hover, button:focus,
   pointer-events: auto;
   border: none;
   background: none;
-  /* width: 38px;
-  height: 38px; */
-  /* display: grid; */
   place-items: center;
   cursor: pointer;
-  transition: transform 0.3s ease;
-  /* backdrop-filter: blur(4px) saturate(120%); */
+  transition: transform var(--center-text-ms) ease, opacity var(--center-text-ms) ease;
 }
-/* .center-text__arrow:hover { transform: scale(1.06); }
-.center-text__arrow:active { transform: scale(0.98); } */
-
-.center-text.is-switching.dir-right .center-text__arrow--left  { transform: translateX(-8px); }
-.center-text.is-switching.dir-right .center-text__arrow--right { transform: translateX( 8px); }
-.center-text.is-switching.dir-left  .center-text__arrow--left  { transform: translateX(-8px); }
-.center-text.is-switching.dir-left  .center-text__arrow--right { transform: translateX( 8px); }
 
 @media (max-width: 560px) {
   .center-text {

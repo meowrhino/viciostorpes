@@ -15,6 +15,7 @@ let ACTIVE = null;       // Categoría activa (null = sin filtro)
 let CARD_INDEX = {};     // slug -> nodo .card
 let STICKERS = [];       // .card.sticker normales
 let EXCLUSIVE_STICKERS = []; // .card.sticker exclusivos (solo con su cat activa)
+// Stickers desactivados temporalmente: la generación en build() está comentada.
 
 // ===== Texto central por categoría =====
 let CENTER_TEXTS = {};                 // viene de HOME.texts
@@ -62,13 +63,14 @@ function animateArrowsFLIP(before, after){
     node.style.transform = `translateX(${dx}px)`;
 
     // 2) siguiente frame: activo transición, muevo a 0 y reaparezco
-    requestAnimationFrame(()=>{
-      requestAnimationFrame(()=>{
-        node.style.transition = 'transform 300ms ease, opacity 180ms ease';
-        node.style.transform = 'translateX(0)';
-        node.style.opacity = '1';
-      });
-    });
+// 2) siguiente frame: que mande el CSS (usa sus transitions)
+requestAnimationFrame(()=>{
+  requestAnimationFrame(()=>{
+    node.style.transition = ''; // hereda de .center-text__arrow en CSS
+    node.style.transform = 'translateX(0)';
+    node.style.opacity = '1';
+  });
+});
 
     const cleanup = (e)=>{
       if(e.propertyName !== 'transform') return;
@@ -116,19 +118,46 @@ function renderCenterText(newText){
   const content = document.getElementById('center-text-content');
   if(!content) return;
 
+  // Resolve new text if not provided
   if(newText === undefined){
     const { list, idx } = CENTER_STATE;
     newText = (list && list.length) ? String(list[idx]) : '';
   }
 
-  content.classList.add('is-fading-out');
-  setTimeout(()=>{
+  const isFirstPaint = !content.textContent || content.textContent.trim() === '';
+  const cs = getComputedStyle(content);
+
+  // Helper: does CSS actually transition OPACITY with non-zero duration?
+  const props = (cs.transitionProperty || '').split(',').map(s => s.trim().toLowerCase());
+  const durs  = (cs.transitionDuration || '').split(',').map(s => s.trim());
+  const hasOpacity = props.some(p => p === 'opacity' || p === 'all');
+  const firstDur = durs[0] || '0s';
+  const durMs = firstDur.endsWith('ms') ? parseFloat(firstDur) : parseFloat(firstDur||'0')*1000;
+  const canFade = hasOpacity && durMs > 0;
+
+  // If first paint or can't fade, swap immediately and run FLIP for arrows
+  if(isFirstPaint || !canFade){
     const before = captureArrowRects();
     content.textContent = newText;
     const after = captureArrowRects();
     animateArrowsFLIP(before, after);
     content.classList.remove('is-fading-out');
-  }, 250); // mantener en sync con CSS (opacity 0.3s)
+    return;
+  }
+
+  // Otherwise: fade-out -> swap -> fade-in
+  content.classList.add('is-fading-out');
+
+  const onEnd = (e)=>{
+    if(e.propertyName !== 'opacity') return;
+    content.removeEventListener('transitionend', onEnd);
+    const before = captureArrowRects();
+    content.textContent = newText;
+    const after = captureArrowRects();
+    animateArrowsFLIP(before, after);
+    content.classList.remove('is-fading-out');
+  };
+  content.addEventListener('transitionend', onEnd, { once: true });
 }
 
 function cycleCenterText(direction){
@@ -414,6 +443,7 @@ async function build(){
     }
   }
 
+  /* === Stickers DESACTIVADOS (normales) ===
   // 3) Stickers normales
   if(Array.isArray(HOME.stickers)){
     HOME.stickers.forEach(st => {
@@ -422,7 +452,9 @@ async function build(){
       field.appendChild(card);
     });
   }
+  === /Stickers DESACTIVADOS (normales) === */
 
+  /* === Stickers DESACTIVADOS (exclusivos) ===
   // 3bis) Stickers EXCLUSIVOS por categoría
   if (HOME.exclusiveStickersByCategory && typeof HOME.exclusiveStickersByCategory === 'object'){
     for (const [cat, arr] of Object.entries(HOME.exclusiveStickersByCategory)){
@@ -434,6 +466,7 @@ async function build(){
       });
     }
   }
+  === /Stickers DESACTIVADOS (exclusivos) === */
 
   // 4) Navegación por categorías (toggle)
   if(nav){

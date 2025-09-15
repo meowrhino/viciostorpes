@@ -6,9 +6,12 @@
       "oldflash"
     ],
     "mockup": [
+      "caballo2"
     ],
     "moodboard": [],
     "tattoo": [
+      "caballo2",
+      "caballo4"
     ]
   },
 
@@ -16,8 +19,42 @@
     "flashes": [],
     "mockup": [],
     "tattoo": [
+      "caballo3"
     ],
     "moodboard": [
+      "caballo4"
+    ]
+  },
+
+  "stickers": [
+    {
+      "image": "3.jpg",
+      "slug": "horses"
+    }
+  ],
+
+  "exclusiveStickersByCategory": {
+    "tattoo": [
+      {
+        "image": "2.jpg",
+        "slug": "caballo3"
+      }
+    ],
+    "moodboard": [
+      {
+        "image": "4.jpg",
+        "slug": "caballo4"
+      }
+    ],
+    "flashes": [
+      {
+        "image": "1.jpg",
+        "slug": "caballo1"
+      },
+      {
+        "image": "6.jpg",
+        "slug": "horses"
+      }
     ]
   },
 
