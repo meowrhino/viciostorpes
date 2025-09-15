@@ -355,11 +355,16 @@ button:hover, button:focus,
   /* display: grid; */
   place-items: center;
   cursor: pointer;
-  transition: transform 120ms ease, background 120ms ease;
+  transition: transform 0.3s ease;
   /* backdrop-filter: blur(4px) saturate(120%); */
 }
-.center-text__arrow:hover { transform: scale(1.06); }
-.center-text__arrow:active { transform: scale(0.98); }
+/* .center-text__arrow:hover { transform: scale(1.06); }
+.center-text__arrow:active { transform: scale(0.98); } */
+
+.center-text.is-switching.dir-right .center-text__arrow--left  { transform: translateX(-8px); }
+.center-text.is-switching.dir-right .center-text__arrow--right { transform: translateX( 8px); }
+.center-text.is-switching.dir-left  .center-text__arrow--left  { transform: translateX(-8px); }
+.center-text.is-switching.dir-left  .center-text__arrow--right { transform: translateX( 8px); }
 
 @media (max-width: 560px) {
   .center-text {

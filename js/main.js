@@ -31,6 +31,57 @@ function initCenterTextFeature(home){
   btnNext && btnNext.addEventListener('click', ()=> cycleCenterText(1));
 }
 
+function captureArrowRects(){
+  const el = document.getElementById('center-text');
+  if(!el) return null;
+  const left  = el.querySelector('.center-text__arrow--left');
+  const right = el.querySelector('.center-text__arrow--right');
+  if(!left || !right) return null;
+  const csL = getComputedStyle(left);
+  const csR = getComputedStyle(right);
+  if(csL.display === 'none' && csR.display === 'none') return null;
+  return {
+    left:  (csL.display !== 'none')  ? left.getBoundingClientRect()  : null,
+    right: (csR.display !== 'none') ? right.getBoundingClientRect() : null,
+    els: { left, right }
+  };
+}
+
+function animateArrowsFLIP(before, after){
+  if(!before || !after) return;
+  const { left: leftEl, right: rightEl } = after.els;
+
+  function flip(oneBefore, oneAfter, node){
+    if(!oneBefore || !oneAfter || !node) return;
+    const dx = oneBefore.left - oneAfter.left;
+    if(Math.abs(dx) < 0.5) return;
+
+    // 1) preparar: oculto y coloco en pos antigua sin transición
+    node.style.transition = 'none';
+    node.style.opacity = '0';
+    node.style.transform = `translateX(${dx}px)`;
+
+    // 2) siguiente frame: activo transición, muevo a 0 y reaparezco
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{
+        node.style.transition = 'transform 300ms ease, opacity 180ms ease';
+        node.style.transform = 'translateX(0)';
+        node.style.opacity = '1';
+      });
+    });
+
+    const cleanup = (e)=>{
+      if(e.propertyName !== 'transform') return;
+      node.style.transition = '';
+      node.removeEventListener('transitionend', cleanup);
+    };
+    node.addEventListener('transitionend', cleanup);
+  }
+
+  flip(before.left,  after.left,  leftEl);
+  flip(before.right, after.right, rightEl);
+}
+
 function setCenterTextForCategory(category){
   const el = document.getElementById('center-text');
   const content = document.getElementById('center-text-content');
@@ -70,17 +121,19 @@ function renderCenterText(newText){
     newText = (list && list.length) ? String(list[idx]) : '';
   }
 
-  // fade-out → change text → fade-in
   content.classList.add('is-fading-out');
   setTimeout(()=>{
+    const before = captureArrowRects();
     content.textContent = newText;
+    const after = captureArrowRects();
+    animateArrowsFLIP(before, after);
     content.classList.remove('is-fading-out');
-  }, 250); // should match CSS transition duration
+  }, 250); // mantener en sync con CSS (opacity 0.3s)
 }
 
 function cycleCenterText(direction){
   const n = CENTER_STATE.list ? CENTER_STATE.list.length : 0;
-  if(n <= 1) return;                   // no hay nada que ciclar
+  if(n <= 1) return;
   CENTER_STATE.idx = (CENTER_STATE.idx + direction + n) % n;
   const nextText = String(CENTER_STATE.list[CENTER_STATE.idx]);
   renderCenterText(nextText);
