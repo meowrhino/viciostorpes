@@ -258,11 +258,23 @@ function applyThemeForCategory(category){
   const merged    = mergeTheme(defaults, overrides);
   applyCSSVars(merged);
 }
-function getSizeFor(category){
+function getSizeFor(category, slug){
   const sizes = HOME?.sizes || {};
   const def   = Number(sizes.default ?? 20);
   const byCat = sizes.byCategory || {};
-  if(category && (category in byCat)) return Number(byCat[category]);
+  const byProj = sizes.byProject || {};
+
+  // 1) Prioridad por proyecto
+  if (slug && Object.prototype.hasOwnProperty.call(byProj, slug)){
+    const n = Number(byProj[slug]);
+    if (Number.isFinite(n)) return n;
+  }
+  // 2) Luego por categoría activa
+  if (category && Object.prototype.hasOwnProperty.call(byCat, category)){
+    const n = Number(byCat[category]);
+    if (Number.isFinite(n)) return n;
+  }
+  // 3) Fallback
   return def;
 }
 
@@ -276,7 +288,7 @@ function getAllSlugsFromHome(){
     (HOME.categories?.[cat] || []).forEach(s => set.add(s));
   }
   // exclusivos: hay que crearlos también para mostrarlos al filtrar
-  const exByCat = HOME.exclusiveByCategory || {};
+  const exByCat = HOME.hiddenProjects || {};
   Object.values(exByCat).forEach(arr => (arr || []).forEach(s => set.add(s)));
   return Array.from(set);
 }
@@ -289,7 +301,7 @@ function getCoordsForSlug(slug){
   return null;
 }
 function getVisibleSetForCategory(category){
-  const exByCat = HOME.exclusiveByCategory || {};
+  const exByCat = HOME.hiddenProjects || {};
   if(!category){
     // estado inicial: ocultar exclusivos
     const hide = new Set();
@@ -347,7 +359,7 @@ function applyFilter(category){
   setCenterTextForCategory(category);
 
   const { mode, show, hide } = getVisibleSetForCategory(category);
-  const size = getSizeFor(category);
+  // size will be computed per card
 
   // Proyectos
   Object.entries(CARD_INDEX).forEach(([slug, card])=>{
@@ -356,9 +368,10 @@ function applyFilter(category){
     else visible = !hide.has(slug);
 
     if(visible){
+      const s = getSizeFor(category, slug);
       card.classList.remove('is-off');
-      card.style.width  = size + 'dvw';
-      card.style.height = size + 'dvw';
+      card.style.width  = s + 'dvw';
+      card.style.height = s + 'dvw';
       card.setAttribute('aria-hidden','false');
     }else{
       card.classList.add('is-off');
@@ -373,9 +386,11 @@ function applyFilter(category){
   STICKERS.forEach(card => {
     const showIt = !set || set.has(card.dataset.slug);
     if(showIt){
+      const slug = card.dataset.slug;
+      const s = getSizeFor(category, slug);
       card.classList.remove('is-off');
-      card.style.width  = size + 'dvw';
-      card.style.height = size + 'dvw';
+      card.style.width  = s + 'dvw';
+      card.style.height = s + 'dvw';
       card.setAttribute('aria-hidden','false');
     }else{
       card.classList.add('is-off');
@@ -388,9 +403,11 @@ function applyFilter(category){
     const cat = card.getAttribute('data-cat');
     const showIt = !!category && category === cat;
     if(showIt){
+      const slug = card.dataset.slug;
+      const s = getSizeFor(category, slug);
       card.classList.remove('is-off');
-      card.style.width  = size + 'dvw';
-      card.style.height = size + 'dvw';
+      card.style.width  = s + 'dvw';
+      card.style.height = s + 'dvw';
       card.setAttribute('aria-hidden','false');
     }else{
       card.classList.add('is-off');

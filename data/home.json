@@ -12,7 +12,7 @@
     ]
   },
 
-  "exclusiveByCategory": {
+  "hiddenProjects": {
     "flashes": [],
     "mockup": [],
     "tattoo": [
@@ -68,12 +68,12 @@
       "tattoo": 18
     }, 
     "byProject": {
-      "caballo1": 8
+      "horses": 8
     }
   },
 
   "coords": {
-    "caballo1": [
+    "horses": [
       80,
       80
     ]
