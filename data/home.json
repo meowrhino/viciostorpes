@@ -14,6 +14,7 @@
       "caballo4"
     ]
   },
+
   "exclusiveByCategory": {
     "flashes": [],
     "mockup": [],
@@ -24,12 +25,14 @@
       "caballo4"
     ]
   },
+
   "stickers": [
     {
       "image": "3.jpg",
       "slug": "horses"
     }
   ],
+
   "exclusiveStickersByCategory": {
     "tattoo": [
       {
@@ -54,6 +57,7 @@
       }
     ]
   },
+
   "backgrounds": {
     "default": {
       "bg": "blue",
@@ -91,6 +95,7 @@
       "hover": "CadetBlue"
     }
   },
+
   "sizes": {
     "default": 14,
     "byCategory": {
@@ -100,6 +105,7 @@
       "tattoo": 18
     }
   },
+
   "coords": {
     "caballo1": [
       80,
@@ -116,6 +122,26 @@
     "caballo4": [
       10,
       10
+    ]
+  },
+
+    "texts": {
+    "default": [
+      "Bienvenida/o a Viciostorpes.",
+      "Explora con las categorías para cambiar el tema."
+    ],
+    "flashes": [
+      "Colección de flashes en curso.",
+      "Reserva tu turno para nuevos diseños."
+    ],
+    "mockup": [
+      ""
+    ],
+    "moodboard": [
+      "Referencias vivas. El mood cambia."
+    ],
+    "tattoo": [
+      "Tatuajes en proceso. Pide cita."
     ]
   }
 }

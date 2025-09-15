@@ -16,6 +16,65 @@ let CARD_INDEX = {};     // slug -> nodo .card
 let STICKERS = [];       // .card.sticker normales
 let EXCLUSIVE_STICKERS = []; // .card.sticker exclusivos (solo con su cat activa)
 
+// ===== Texto central por categoría =====
+let CENTER_TEXTS = {};                 // viene de HOME.texts
+let CENTER_STATE = { cat: null, idx: 0, list: [] };
+
+function initCenterTextFeature(home){
+  CENTER_TEXTS = (home && typeof home.texts === 'object') ? home.texts : {};
+  const el = document.getElementById('center-text');
+  if(!el) return; // si no existe en el DOM, no hacemos nada
+
+  const btnPrev = el.querySelector('.center-text__arrow--left');
+  const btnNext = el.querySelector('.center-text__arrow--right');
+  btnPrev && btnPrev.addEventListener('click', ()=> cycleCenterText(-1));
+  btnNext && btnNext.addEventListener('click', ()=> cycleCenterText(1));
+}
+
+function setCenterTextForCategory(category){
+  const el = document.getElementById('center-text');
+  const content = document.getElementById('center-text-content');
+  if(!el || !content) return;
+
+  // 1) Lista: primero por categoría, si no hay, cae a default.
+  const listByCat   = Array.isArray(CENTER_TEXTS?.[category]) ? CENTER_TEXTS[category] : [];
+  const listDefault = Array.isArray(CENTER_TEXTS?.default)    ? CENTER_TEXTS.default    : [];
+  const list        = (listByCat.length > 0) ? listByCat : listDefault;
+
+  CENTER_STATE.cat  = category || 'default';
+  CENTER_STATE.idx  = 0;
+  CENTER_STATE.list = list;
+
+  // 2) Render condicional
+  if(!list || list.length === 0){
+    el.hidden = true;           // 0 items → no se ve nada
+    return;
+  }
+  el.hidden = false;
+  renderCenterText();
+
+  // 3) Flechas según longitud
+  const prev = el.querySelector('.center-text__arrow--left');
+  const next = el.querySelector('.center-text__arrow--right');
+  const showArrows = list.length > 1;  // 1 item → sin flechas
+  if(prev) prev.style.display = showArrows ? '' : 'none';
+  if(next) next.style.display = showArrows ? '' : 'none';
+}
+
+function renderCenterText(){
+  const content = document.getElementById('center-text-content');
+  if(!content) return;
+  const { list, idx } = CENTER_STATE;
+  content.textContent = (list && list.length) ? String(list[idx]) : '';
+}
+
+function cycleCenterText(direction){
+  const n = CENTER_STATE.list ? CENTER_STATE.list.length : 0;
+  if(n <= 1) return;                   // no hay nada que ciclar
+  CENTER_STATE.idx = (CENTER_STATE.idx + direction + n) % n;
+  renderCenterText();
+}
+
 // ------------------------
 // Utilidades
 // ------------------------
@@ -162,6 +221,7 @@ function applyFilter(category){
   ACTIVE = category;
   setActiveButton(category);
   applyThemeForCategory(category);
+  setCenterTextForCategory(category);
 
   const { mode, show, hide } = getVisibleSetForCategory(category);
   const size = getSizeFor(category);
@@ -270,6 +330,9 @@ function cardExclusiveSticker({image, slug}, category){
 async function build(){
   // 1) Cargar configuración
   HOME = await loadJSON("data/home.json");
+
+  // Initialize center text feature
+  initCenterTextFeature(HOME);
 
   // 2) Pintar proyectos (TODOS: categorías + exclusivos)
   const slugs = getAllSlugsFromHome();

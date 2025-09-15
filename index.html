@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Home</title>
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sofia+Sans+Extra+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sofia+Sans+Extra+Condensed:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
 </head>
+
 <body class="home">
   <div id="bg" class="bg"></div>
   <div id="bg-overlay" class="bg-overlay"></div>
@@ -24,6 +28,17 @@
     <button class="cat-btn" data-cat="tattoo">tattoo</button>
   </nav>
 
+  <!-- Texto central con flechas -->
+  <div id="center-text" class="center-text" aria-live="polite" hidden>
+<button class="center-text__arrow center-text__arrow--left" aria-label="Texto anterior" type="button">«</button>
+
+    <div class="center-text__inner">
+      <div class="center-text__content" id="center-text-content"></div>
+    </div>
+<button class="center-text__arrow center-text__arrow--right" aria-label="Texto siguiente" type="button">»</button>
+  </div>
+
   <script src="js/main.js" defer></script>
 </body>
+
 </html>
