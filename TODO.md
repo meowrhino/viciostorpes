@@ -1,23 +1,24 @@
-# TODO del Proyecto (v2: coords aleatorias y tamaños por categoría)
+# TODO del Proyecto
 
-## Cambios clave
-- Home sin grid: cada item (proyecto o sticker) se **posiciona por coordenadas** en **dvh/dvw**,
-  tomando el punto dado como **centro** del cuadrado.
-- `home.json` incorpora `sizes` para definir tamaño por defecto y por categoría (en **dvw**).
-- Cada `<slug>.json` puede incluir `coords: [top_dvh, left_dvw]` (ambos 0–100). Si falta, se coloca **aleatorio**.
-- Project page: márgenes **20dvh** arriba y **50dvh** abajo; orden **hero → título → descripción → galería**.
-- El enlace “volver a la home” usa el **mismo estilo** que los botones del menú.
+## Novedades v2
+- Home sin grid: cada item (proyecto o sticker) se posiciona por coordenadas (`dvh`/`dvw`), tomando el punto como **centro**.
+- `home.json` define tamaños en `sizes` (default y por categoría).
+- Cada `<slug>.json` puede incluir `coords: [top_dvh, left_dvw]`. Si falta, se coloca en una posición **aleatoria**.
+- Página de proyecto: márgenes 20dvh arriba, 50dvh abajo. Orden: **hero → título → descripción → galería**.
+- El enlace “volver a la home” reutiliza el estilo de los botones del menú.
 
-## Estructura
-- `/index.html` y `/project.html`
-- `/css/styles.css`
-- `/js/main.js` (coords + sizes + filtros + fondos)
-- `/js/project.js` (orden y márgenes, fondo por categoría)
-- `/data/home.json`
-- `/data/_FONDOS/` (`flashes.jpg`, `mockup.jpg`, `moodboard.jpg`, `tattoo.jpg`)
-- `/data/_PROYECTOS/<slug>/<slug>.json` + `1.jpg…5.jpg`
+## Estructura de archivos
+- `/index.html` → Home con categorías y grid libre.
+- `/project.html` → Vista individual de proyecto.
+- `/css/styles.css` → Estilos generales, categorías y texto central.
+- `/js/main.js` → Lógica de home (coords, tamaños, filtros, fondos, center-text).
+- `/js/project.js` → Lógica de página de proyecto.
+- `/data/home.json` → Configuración global (categorías, tamaños, textos, fondos).
+- `/data/_FONDOS/` → Fondos de cada categoría.
+- `/data/_PROYECTOS/<slug>/<slug>.json` + imágenes.
 
-## home.json (ejemplo)
+## Ejemplo de configuración
+### home.json
 ```json
 {
   "sizes": {
@@ -32,7 +33,7 @@
 }
 ```
 
-## JSON de proyecto con coords
+### Proyecto con coords
 ```json
 {
   "titulo": "Caballo 1",
@@ -44,20 +45,19 @@
 ```
 > `coords[0]` = **top** en `dvh`, `coords[1]` = **left** en `dvw`.
 
-## Comportamiento
-- Sin filtro: se muestran **todos** con tamaño `sizes.default` (dvw).
-- Con filtro activo: solo se muestran los slugs de la categoría, con tamaño `sizes.byCategory[cat]` si existe (si no, `default`).
-- Stickers se colocan con coords **aleatorias** (más adelante se podría añadir coords a `home.json` para stickers).
+## Cómo funciona
+- **Sin filtro** → se muestran todos, con tamaño `sizes.default` (dvw).
+- **Con filtro** → solo slugs de la categoría activa, con tamaño `sizes.byCategory[cat]` si existe (si no, usa `default`).
+- **Stickers** → actualmente desactivados. Antes se colocaban con coords aleatorias.
 
-## Pendientes opcionales
+## Backlog (opcional)
 - [ ] Evitar colisiones entre piezas (layout solver ligero).
 - [ ] Transiciones/animaciones al activar/desactivar filtros y al cambiar tamaño.
 - [ ] Persistir posiciones y categoría activa en `sessionStorage`.
 - [ ] Soporte de `coords` también para stickers en `home.json`.
 
-# Cambios v3
+## Plan v3
 - Transiciones (opacity/scale/size) al filtrar.
-- En lugar de ocultar con display:none, usamos `.is-off` para poder animar.
-- Stickers aceptan `image: "2.jpg"` o ruta completa; si solo es el nombre,
-  se resuelve como `data/_PROYECTOS/<slug>/2.jpg`.
-- Mantiene coords en dvh/dvw, y tamaños configurables por categoría (dvw).
+- En lugar de ocultar con `display:none`, usar `.is-off` para poder animar.
+- Stickers: aceptar `image: "2.jpg"` o ruta completa; si solo es el nombre, se resuelve como `data/_PROYECTOS/<slug>/2.jpg`.
+- Mantener coords en dvh/dvw, y tamaños configurables por categoría.

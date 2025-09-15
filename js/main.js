@@ -6,7 +6,8 @@
 // - Stickers exclusivos por categoría (HOME.exclusiveStickersByCategory)
 // - Tema y tamaños por categoría como antes
 
-const CATEGORIES = ["flashes","mockup","moodboard","tattoo"];
+// Las categorías ahora se leen dinámicamente desde HOME.categories
+const getCategories = () => Object.keys(HOME?.categories || {});
 const field = document.getElementById("field");
 const nav   = document.getElementById("categoryNav");
 
@@ -270,8 +271,8 @@ function getSizeFor(category){
 // ------------------------
 function getAllSlugsFromHome(){
   const set = new Set();
-  // normales por categoría
-  for(const cat of CATEGORIES){
+  // normales por categoría (dinámico)
+  for (const cat of getCategories()){
     (HOME.categories?.[cat] || []).forEach(s => set.add(s));
   }
   // exclusivos: hay que crearlos también para mostrarlos al filtrar
@@ -304,6 +305,35 @@ function getVisibleSetForCategory(category){
 
 // ------------------------
 // UI (filtro por categoría)
+function renderCategoryNav(){
+  const container = nav || document.getElementById('categoryNav');
+  if (!container) {
+    console.warn('[nav] No se encontró #categoryNav');
+    return;
+  }
+
+  const cats = getCategories();
+  if (!cats.length) {
+    console.warn('[nav] HOME.categories está vacío o no definido');
+    container.innerHTML = '';
+    return;
+  }
+  // Asegurar la clase que aplica el layout/posicionamiento desde CSS
+  container.classList.add('category-nav');
+  console.log('[nav] renderCategoryNav -> container:', container, 'cats:', cats);
+
+  container.innerHTML = '';
+  cats.forEach(cat => {
+    const btn = el('button', {
+      class: 'cat-btn',
+      attrs: { 'data-cat': cat, type: 'button' },
+      html: cat
+    });
+    container.appendChild(btn);
+  });
+
+  console.log('[nav] botones pintados:', container.childElementCount, cats);
+}
 // ------------------------
 function setActiveButton(category){
   document.querySelectorAll('.cat-btn').forEach(btn => {
@@ -423,6 +453,9 @@ function cardExclusiveSticker({image, slug}, category){
 async function build(){
   // 1) Cargar configuración
   HOME = await loadJSON("data/home.json");
+
+  // Renderizar botones de categorías desde HOME
+  renderCategoryNav();
 
   // Initialize center text feature
   initCenterTextFeature(HOME);

@@ -66,6 +66,9 @@
       "mockup": 16,
       "moodboard": 20,
       "tattoo": 18
+    }, 
+    "byProject": {
+      "caballo1": 8
     }
   },
 
@@ -73,18 +76,6 @@
     "caballo1": [
       80,
       80
-    ],
-    "caballo2": [
-      60,
-      60
-    ],
-    "caballo3": [
-      30,
-      30
-    ],
-    "caballo4": [
-      10,
-      10
     ]
   },
 
