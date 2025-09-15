@@ -6,14 +6,32 @@
 
 ---
 
+## Inicio rápido (5 minutos)
+
+1) **Descarga o clona** este repositorio.
+2) Abre la carpeta en VS Code y levanta un **servidor estático** (por ejemplo con *Live Server*).
+3) Abre `index.html` en el navegador.
+4) Edita `data/home.json`:
+   - Añade tu primera categoría en `categories`.
+   - Crea una carpeta `data/_PROYECTOS/<mi-slug>/` con `1.jpg` y `<mi-slug>.json` (ver plantillas abajo).
+5) Recarga: verás tu proyecto en la Home. 
+6) Si quieres publicarlo, usa **GitHub Pages** (guía más abajo).
+
+---
+
 ## Índice
 
 - [Viciostorpes — Guía completa (para editores y devs)](#viciostorpes--guía-completa-para-editores-y-devs)
+  - [Inicio rápido (5 minutos)](#inicio-rápido-5-minutos)
   - [Índice](#índice)
   - [Qué es y cómo se ve](#qué-es-y-cómo-se-ve)
   - [Abrir el proyecto](#abrir-el-proyecto)
+  - [Publicar en GitHub Pages](#publicar-en-github-pages)
   - [Estructura de carpetas](#estructura-de-carpetas)
   - [Conceptos clave](#conceptos-clave)
+  - [Plantillas copiables](#plantillas-copiables)
+    - [Mínimo `home.json`](#mínimo-homejson)
+    - [Mínimo `<slug>.json`](#mínimo-slugjson)
   - [Editar el sitio (paso a paso)](#editar-el-sitio-paso-a-paso)
     - [Añadir una **categoría**](#añadir-una-categoría)
     - [Añadir un **proyecto**](#añadir-un-proyecto)
@@ -26,7 +44,9 @@
     - [Textos centrales por categoría](#textos-centrales-por-categoría)
   - [Buenas prácticas con imágenes (¡minúsculas!)](#buenas-prácticas-con-imágenes-minúsculas)
     - [Renombrar en lote a minúsculas](#renombrar-en-lote-a-minúsculas)
+  - [Checklist antes de publicar](#checklist-antes-de-publicar)
   - [Solución de problemas](#solución-de-problemas)
+  - [FAQ](#faq)
   - [Detalles para desarrolladores](#detalles-para-desarrolladores)
     - [Datos y flujo](#datos-y-flujo)
     - [Esquema de `home.json`](#esquema-de-homejson)
@@ -53,6 +73,21 @@ No hay base de datos ni servidor: todo sale de ficheros en `/data`.
    - `project.html?slug=<slug>` → Detalle de un proyecto.
 
 > **Importante:** abrir `index.html` como `file://` puede bloquear la carga de JSON. Usa un servidor local.
+
+---
+
+## Publicar en GitHub Pages
+
+1. Sube el repo a GitHub.
+2. En **Settings → Pages** selecciona:
+   - *Source*: `Deploy from a branch`.
+   - *Branch*: `main` (o la rama que uses) y carpeta `/ (root)`.
+3. Guarda y espera 1–2 minutos. 
+4. Tu web quedará en `https://<usuario>.github.io/<repo>/`.
+
+**Notas**:
+- Las rutas del proyecto son **relativas** → no necesitas cambiar nada para que funcione en un subdirectorio.
+- GitHub Pages es **case-sensitive**: usa archivos en **minúsculas** (ver guía más abajo).
 
 ---
 
@@ -87,6 +122,30 @@ project.html                 # plantilla del detalle
 
 ---
 
+## Plantillas copiables
+
+### Mínimo `home.json`
+```json
+{
+  "categories": { "galeria": ["ejemplo"] },
+  "backgrounds": { "default": { "bg": "#111", "overlay": "rgba(0,0,0,0.1)", "filters": "none", "color": "#fff", "hover": "#ffdf6e" } },
+  "sizes": { "default": 14 },
+  "texts": { "default": ["Hola"] }
+}
+```
+
+### Mínimo `<slug>.json`
+```json
+{
+  "titulo": "Mi proyecto",
+  "texto": "Descripción breve.",
+  "imagenPrincipal": "1.jpg",
+  "galeria": ["2.jpg", "3.jpg"]
+}
+```
+
+---
+
 ## Editar el sitio (paso a paso)
 
 ### Añadir una **categoría**
@@ -106,6 +165,27 @@ Edita `data/home.json` → sección `categories`:
 ```
 
 Eso es **suficiente**: la Home genera **automáticamente** los botones de categorías a partir de `home.json`.
+
+Por ejemplo:
+
+- Si quieres una categoría de posters llamada `posters`, solo añade:
+
+```json
+"categories": {
+  "posters": []
+}
+```
+
+- Si quieres ocultar temporalmente una categoría sin borrarla, simplemente déjala vacía o comenta su contenido (en JSON no hay comentarios, pero puedes eliminar su lista de proyectos):
+
+```json
+"categories": {
+  "flashes": ["caballo1", "caballo2"],
+  "posters": []    // Categoría sin proyectos, no se mostrará ningún proyecto
+}
+```
+
+Así la categoría `posters` aparece en el menú pero sin proyectos.
 
 Opcionalmente, añade tema y tamaños específicos para `"nueva"` (ver secciones de **Tema** y **Tamaños**).
 
@@ -129,6 +209,18 @@ Opcionalmente, añade tema y tamaños específicos para `"nueva"` (ver secciones
 }
 ```
 > Alias válidos: `titulo|title`, `texto|descripcion|description`, `imagenPrincipal|hero|imagen_principal`, `galeria|gallery|imagenes|images`.
+
+Por ejemplo, la estructura de carpetas para un proyecto llamado `caballo1` podría ser:
+
+```
+data/_PROYECTOS/caballo1/
+  caballo1.json
+  1.jpg
+  2.jpg
+  3.jpg
+```
+
+Donde `caballo1.json` contiene los metadatos y `1.jpg`, `2.jpg`, `3.jpg` son las imágenes usadas en el proyecto.
 
 #### Registrar en `home.json`
 
@@ -157,6 +249,13 @@ En `home.json` → `coords`:
 - Evita valores extremos (0 o 100). Recomendado: **2–98**.
 - Si un slug **no** tiene `coords`, se coloca en una posición **aleatoria agradable**.
 
+Por ejemplo:
+
+- Si pones `"caballo1": [10, 90]`, la carta estará cerca del **top right** (arriba a la derecha).
+- Si pones `"caballo2": [90, 10]`, la carta estará cerca del **bottom left** (abajo a la izquierda).
+
+Esto te permite colocar manualmente los proyectos donde quieras en la pantalla.
+
 ---
 
 ### Cambiar **tamaños** (por defecto, por categoría, por proyecto)
@@ -182,6 +281,24 @@ En `home.json` → `sizes`:
   2. `byCategory[categoria_activa]`
   3. `default`
 
+Por ejemplo:
+
+- Si quieres que todos los flashes sean grandes (20dvw) pero un proyecto concreto (`horses`) sea más pequeño (12dvw):
+
+```json
+"sizes": {
+  "default": 14,
+  "byCategory": {
+    "flashes": 20
+  },
+  "byProject": {
+    "horses": 12
+  }
+}
+```
+
+Así, cuando la categoría activa sea `flashes`, todas las cartas serán de 20dvw excepto `horses` que será de 12dvw.
+
 ---
 
 ### Editar el **tema** (fondo, overlay, filtros, colores)
@@ -198,7 +315,7 @@ En `home.json` → `backgrounds` define un tema **default** y, opcionalmente, un
     "hover": "#ffdf6e"              
   },
   "moodboard": {
-    "image": "data/_FONDOS/moodboard.jpg",
+    "bg": "data/_FONDOS/moodboard.jpg",  
     "overlay": "rgba(0,0,0,0.18)",
     "filters": "contrast(1.05) saturate(1.05)",
     "color": "azure",
@@ -209,23 +326,43 @@ En `home.json` → `backgrounds` define un tema **default** y, opcionalmente, un
 
 #### ¿Qué hace cada opción?
 
-- `bg` → **color de fondo** si no hay `image` o mientras carga.
-- `image` → **imagen de fondo** (ruta relativa o absoluta). 
-- `overlay` → color por encima del fondo para mejorar el **contraste** (usa `rgba(..., alpha_baja)`).
-- `filters` → cadena con filtros CSS aplicados a la imagen de fondo. Puedes combinar:
-  - `none` → sin filtros.
-  - `blur(2px)` → desenfoque.
-  - `brightness(0.9)` → oscurece un 10%.
-  - `contrast(1.1)` → más contraste (10%).
-  - `saturate(1.05)` → más saturación (5%).
-  - `grayscale(0.2)` → 20% en escala de grises.
-  - `sepia(0.15)` → 15% tono sepia.
-  - `hue-rotate(12deg)` → gira el tono 12° (útil para variar color).
-  - **Combinados**: `"contrast(1.05) saturate(1.05)"`.
-- `color` → color del **texto** y botones en reposo.
-- `hover` → color del **texto** y botones al pasar el ratón / foco.
+- `bg` → **color** (hex, rgb, hsl, nombre CSS) **o** ruta a **imagen** (relativa o absoluta). 
+- `overlay` → capa semitransparente sobre el fondo, útil para contraste (ej. `rgba(0,0,0,0.12)`).
+- `filters` → se aplican a la **imagen de fondo** (se ignoran si `bg` es un color).
+- `color` → color de texto y botones.
+- `hover` → color de texto/botones al pasar el ratón o foco.
 
-> Consejo: empieza con cambios suaves (±5–10%) para que no distorsione el arte.
+> Tip: si usas imagen, combina `overlay` + `filters` para asegurar legibilidad del texto. Ejemplo: un `overlay` negro claro y un `contrast(1.05)`.
+
+Por ejemplo:
+
+- Si quieres que la categoría `mockup` tenga un fondo rojo liso:
+
+```json
+"backgrounds": {
+  "mockup": {
+    "bg": "red",
+    "overlay": "rgba(0,0,0,0.1)",
+    "filters": "none",
+    "color": "white",
+    "hover": "yellow"
+  }
+}
+```
+
+- Si quieres que la categoría `tattoo` tenga una foto de fondo:
+
+```json
+"backgrounds": {
+  "tattoo": {
+    "bg": "data/_FONDOS/tattoo-bg.jpg",
+    "overlay": "rgba(0,0,0,0.3)",
+    "filters": "grayscale(0.5) contrast(1.1)",
+    "color": "#f0e6d2",
+    "hover": "#ffcc00"
+  }
+}
+```
 
 ---
 
@@ -246,6 +383,16 @@ En `home.json` → `texts`:
 - Si **1** texto → aparece **sin flechas**.
 - Si **2 o más** → aparecen flechas para pasar; hay animación de **fade** y las flechas se **deslizan suavemente**.
 
+Por ejemplo:
+
+- Si en `tattoo` pones:
+
+```json
+"tattoo": ["Bienvenido a Tattoo", "Explora"]
+```
+
+verás flechas para pasar entre esos dos textos con animación suave.
+
 ---
 
 ## Buenas prácticas con imágenes (¡minúsculas!)
@@ -253,9 +400,29 @@ En `home.json` → `texts`:
 GitHub Pages es **sensible a mayúsculas/minúsculas**. 
 `1.jpg` **no** es lo mismo que `1.JPG` o `1.jpeg`. Si el JSON pide `1.jpg` y el archivo es `1.JPG` obtendrás **404**.
 
+**Ejemplos:**
+
+- Incorrecto:
+
+```json
+"imagenPrincipal": "1.JPG"
+```
+
+pero el archivo se llama `1.jpg` → no funcionará.
+
+- Correcto:
+
+```json
+"imagenPrincipal": "1.jpg"
+```
+
+y el archivo es `1.jpg`.
+
 **Recomendación:**
 - Nombra **todas** las imágenes en **minúsculas**, sin espacios ni tildes.
 - Usa `.jpg` (o `.png` si realmente es PNG) y escribe la **misma extensión** en el JSON.
+
+**Nota:** el campo `bg` en `backgrounds` puede ser también una imagen. En ese caso, aplica las mismas reglas de minúsculas que para las galerías (`.jpg` vs `.JPG`).
 
 ### Renombrar en lote a minúsculas
 
@@ -279,6 +446,17 @@ Get-ChildItem -Recurse -File | ForEach-Object {
 
 ---
 
+## Checklist antes de publicar
+
+- [ ] Todos los nombres de archivos de imágenes en **minúsculas** (`.jpg` o `.png`).
+- [ ] `home.json` válido (sin comentarios, llaves/ comas correctas).
+- [ ] Cada proyecto tiene su carpeta `data/_PROYECTOS/<slug>/` con `<slug>.json` y al menos `1.jpg`.
+- [ ] `categories` contiene todos los slugs que deseas mostrar.
+- [ ] Si usas imágenes de fondo en `backgrounds`, rutas correctas y en minúsculas.
+- [ ] Probar filtros de categoría en la Home y la navegación a `project.html?slug=<slug>`.
+
+---
+
 ## Solución de problemas
 
 **No carga el fondo / imágenes 404**  
@@ -295,6 +473,34 @@ Respeta `prefers-reduced-motion` y las duraciones están en CSS. Asegúrate de n
 **En la vista de proyecto no sale nada**  
 Confirma que la URL es `project.html?slug=<slug>` y que existe `/data/_PROYECTOS/<slug>/<slug>.json`.
 
+**Cambios no se ven en GitHub Pages**  
+Asegúrate de haber hecho push a la **misma rama** configurada en Pages y espera el despliegue (~1–2 min). A veces ayuda tocar un `.html` para forzar rebuild.
+
+---
+
+## FAQ
+
+**¿Puedo usar esto sin saber programar?**  
+Sí. Edita `home.json` y los `.json` de cada proyecto con un editor de texto. Sigue las plantillas y ejemplos de este README.
+
+**¿Puedo añadir/quitar categorías sin tocar HTML/JS?**  
+Sí. El menú de categorías se genera automáticamente a partir de `home.json > categories`.
+
+**¿Cómo cambio el aspecto?**  
+En `home.json > backgrounds`. Usa `bg` como color o imagen, `overlay` para contraste y `filters` para ajustar la imagen.
+
+**¿Cómo controlo el tamaño de una pieza concreta?**  
+Con `sizes.byProject["mi-slug"]`.
+
+**¿Cómo coloco una carta en un sitio exacto?**  
+Con `coords["mi-slug"] = [top_dvh, left_dvw]`.
+
+**¿Puedo desactivar los stickers?**  
+Sí. Están desactivados por defecto en el JS. Puedes reactivarlos descomentando los bloques indicados en `build()`.
+
+**¿Esto funciona en móvil?**  
+Sí. Se usan unidades dinámicas `dvh/dvw` y tamaños relativos. Revisa contrastes y pesos de imágenes para buen rendimiento.
+
 ---
 
 ## Detalles para desarrolladores
@@ -302,7 +508,7 @@ Confirma que la URL es `project.html?slug=<slug>` y que existe `/data/_PROYECTOS
 ### Datos y flujo
 
 - **Dynamic nav**: los botones de categoría se generan desde `Object.keys(HOME.categories)`; no hay lista hardcode.
-- **Theme**: `applyThemeForCategory(cat)` inyecta `--bg-image`, `--bg-color`, `--bg-filters`, `--overlay-color`, `--text-color`, `--hover-color`.
+- **Theme**: `applyThemeForCategory(cat)` inyecta `--bg-color`, `--bg-image`… usando siempre `bg` (color o imagen).
 - **Filter**: `applyFilter(cat)` decide visibilidad, tamaños y tema; mezcla `categories[cat]` + `exclusiveByCategory[cat]`.
 - **Sizes**: `getSizeFor(category, slug)` prioriza `byProject` → `byCategory` → `default`.
 - **Center-text**: `renderCenterText()` sincroniza el fade con `transitionend` (sin ms hardcode). 
@@ -319,7 +525,7 @@ Campos habituales (todos opcionales salvo `categories`):
   "exclusiveByCategory": { "moodboard": ["horses"] },
   "backgrounds": {
     "default": { "bg": "#111", "overlay": "rgba(0,0,0,0.12)", "filters": "none", "color": "#fff", "hover": "#ffdf6e" },
-    "flashes": { "image": "data/_FONDOS/flashes.jpg", "overlay": "rgba(0,0,0,0.12)", "filters": "contrast(1.05)", "color": "#fff", "hover": "#ffdf6e" }
+    "flashes": { "bg": "data/_FONDOS/flashes.jpg", "overlay": "rgba(0,0,0,0.12)", "filters": "contrast(1.05)", "color": "#fff", "hover": "#ffdf6e" }
   },
   "sizes": { "default": 14, "byCategory": { "flashes": 20 }, "byProject": { "caballo1": 22 } },
   "texts": { "default": ["Hola"], "flashes": ["Texto 1", "Texto 2"], "mockup": [] },
